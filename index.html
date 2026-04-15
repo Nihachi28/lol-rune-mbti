@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    
+    <title>海斗人格测试 - 海克斯大乱斗MBTI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .animate-pulse-soft { animation: pulse-soft 3s infinite ease-in-out; }
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.6);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect, useRef } = React;
+
+        // --- 图标组件 ---
+        const Icon = ({ name, size = 24, className = '' }) => {
+            const svgProps = {
+                xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", 
+                fill: "none", stroke: "currentColor",
+                strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", 
+                className: className, style: { width: size, height: size }
+            };
+            switch (name) {
+                case 'snowball': return <svg {...svgProps}><circle cx="12" cy="12" r="3"/><circle cx="18" cy="8" r="1.5"/><circle cx="6" cy="16" r="1"/><circle cx="8" cy="4" r="1"/></svg>;
+                case 'sword': return <svg {...svgProps}><path d="M3 3l18 18"/><path d="M3 21l18-18"/><path d="M10 10l4 4"/><path d="M14 10l4 4"/></svg>;
+                case 'shield': return <svg {...svgProps}><path d="M12 2l8 4v6c0 4.4-3.6 8-8 8s-8-3.6-8-8V6l8-4z"/></svg>;
+                case 'target': return <svg {...svgProps}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+                case 'smile': return <svg {...svgProps}><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>;
+                case 'trophy': return <svg {...svgProps}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 1.1-.9 2-2 2H6"/><path d="M14 14.66V17c0 1.1.9 2 2 2h2"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
+                case 'rotate-ccw': return <svg {...svgProps}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>;
+                case 'share': return <svg {...svgProps}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>;
+                case 'download': return <svg {...svgProps}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+                default: return null;
+            }
+        };
+
+        // --- 测试题目数据 ---
+        const questions = [
+            // 雪球冲锋执念维度 (1-6)
+            {
+                id: 1,
+                category: 'snowball',
+                text: '游戏里雪球技能的正确用法是？',
+                options: [
+                    { value: 'A', text: '只要看到敌方就飞，管他多少人，先冲再说（诺手/奥拉夫同款莽）' },
+                    { value: 'B', text: '捏在手里当宝贝，除非队友开团，否则绝不轻易扔（泽拉斯专属缩头操作）' },
+                    { value: 'C', text: '看情况甩，敌方落单就飞，人多就捏着，不莽也不缩' }
+                ]
+            },
+            {
+                id: 2,
+                category: 'snowball',
+                text: '队友喊"雪球开团"，你会？',
+                options: [
+                    { value: 'A', text: '秒飞雪球领先开团，主打一个"我先上，你们跟上"' },
+                    { value: 'B', text: '犹豫3秒，确认安全后再扔，生怕被集火秒掉' },
+                    { value: 'C', text: '跟着队友节奏，队友先上我再飞，不抢头也不拖后腿' }
+                ]
+            },
+            {
+                id: 3,
+                category: 'snowball',
+                text: '己方劣势，你手里有雪球，会选择？',
+                options: [
+                    { value: 'A', text: '雪球冲敌方后排，赌一把偷掉C位翻盘' },
+                    { value: 'B', text: '雪球留着保命，万一被追能用来拉开距离' },
+                    { value: 'C', text: '观察局势，有机会就偷残血，没机会就留着保命' }
+                ]
+            },
+            {
+                id: 4,
+                category: 'snowball',
+                text: '敌方残血躲在塔下，你手里有雪球，会？',
+                options: [
+                    { value: 'A', text: '直接飞雪球越塔，哪怕抗塔也要拿下人头' },
+                    { value: 'B', text: '放弃雪球，塔下太危险，绝不冒进' },
+                    { value: 'C', text: '等队友过来，一起越塔，不单独冒险也不轻易放弃' }
+                ]
+            },
+            {
+                id: 5,
+                category: 'snowball',
+                text: '雪球CD刚转好，敌方5人抱团在中路，你会？',
+                options: [
+                    { value: 'A', text: '果断飞雪球开团，主打一个出其不意' },
+                    { value: 'B', text: '赶紧把雪球捏紧，5人抱团冲上去就是送' },
+                    { value: 'C', text: '观察队友位置，队友跟上就飞，没跟上就继续捏着' }
+                ]
+            },
+            {
+                id: 6,
+                category: 'snowball',
+                text: '玩辅助有雪球，你会优先用雪球做什么？',
+                options: [
+                    { value: 'A', text: '飞雪球开团，帮队友创造输出机会' },
+                    { value: 'B', text: '留着雪球救队友，万一队友被追能解围' },
+                    { value: 'C', text: '看局势，队友需要开团就飞，需要保命就留' }
+                ]
+            },
+            // 技能释放态度维度 (7-12)
+            {
+                id: 7,
+                category: 'skill',
+                text: '技能CD转好后，你的操作是？',
+                options: [
+                    { value: 'A', text: '不管有没有敌人，先甩出去清线/蹭伤害，主打一个不浪费' },
+                    { value: 'B', text: '攥紧技能等机会，尤其是大招，必须等到敌方扎堆再放' },
+                    { value: 'C', text: '有敌人就甩，没敌人就留着，不刻意浪费也不刻意攥着' }
+                ]
+            },
+            {
+                id: 8,
+                category: 'skill',
+                text: '玩火男/安妮这类AOE英雄，你会？',
+                options: [
+                    { value: 'A', text: '技能乱甩，哪怕只蹭到一点伤害，也要让敌方感受到你的存在' },
+                    { value: 'B', text: '耐心等敌方站位集中，一套技能打满，不做无用功' },
+                    { value: 'C', text: '随缘甩技能，看到敌方就放，没扎堆也不刻意等' }
+                ]
+            },
+            {
+                id: 9,
+                category: 'skill',
+                text: '游戏快结束时，你的大招还没放，会？',
+                options: [
+                    { value: 'A', text: '随便找个敌方单位甩出去，不浪费CD，主打一个仪式感' },
+                    { value: 'B', text: '继续留着，万一翻盘能用，哪怕最后没放也不随便浪费' },
+                    { value: 'C', text: '有残血就甩，没残血就留着，不强求也不浪费' }
+                ]
+            },
+            {
+                id: 10,
+                category: 'skill',
+                text: '团战刚开，你的大招CD刚好转好，会？',
+                options: [
+                    { value: 'A', text: '立马甩大招，不管敌方站位，先打一波伤害再说' },
+                    { value: 'B', text: '先观察敌方站位，等敌方扎堆再放大招，打满伤害' },
+                    { value: 'C', text: '看队友输出，队友跟上就放，没跟上就再等1-2秒' }
+                ]
+            },
+            {
+                id: 11,
+                category: 'skill',
+                text: '玩辅助（如璐璐、卡尔玛），你的技能释放习惯是？',
+                options: [
+                    { value: 'A', text: '技能乱甩，不管队友需不需要，CD好就放' },
+                    { value: 'B', text: '技能攥紧，只在队友被集火、需要保护时才放' },
+                    { value: 'C', text: '队友有危险就放保护技能，没危险就偶尔蹭点伤害' }
+                ]
+            },
+            {
+                id: 12,
+                category: 'skill',
+                text: '技能空了之后，你的反应是？',
+                options: [
+                    { value: 'A', text: '继续甩其他技能，哪怕空了也不影响，主打一个气势' },
+                    { value: 'B', text: '停止放技能，等技能CD，避免再空浪费' },
+                    { value: 'C', text: '随缘放技能，不空就打伤害，空了就等下一波' }
+                ]
+            },
+            // 风险承担觉悟维度 (13-18)
+            {
+                id: 13,
+                category: 'risk',
+                text: '团战劣势，需要有人肉身开团，你会？',
+                options: [
+                    { value: 'A', text: '主动站出来，卖自己换队友输出时间，主打一个团队奉献' },
+                    { value: 'B', text: '躲在队友身后，绝不先上，KDA比输赢重要' },
+                    { value: 'C', text: '看队友状态，队友能跟上就上，跟不上就不硬送' }
+                ]
+            },
+            {
+                id: 14,
+                category: 'risk',
+                text: '敌方残血但有控制技能，你会？',
+                options: [
+                    { value: 'A', text: '果断冲上去收割，哪怕被控制，换残血也值' },
+                    { value: 'B', text: '放弃收割，万一被反杀掉KDA，得不偿失' },
+                    { value: 'C', text: '观察技能CD，敌方没控制就上，有控制就放弃' }
+                ]
+            },
+            {
+                id: 15,
+                category: 'risk',
+                text: '队友全倒，你孤身一人面对敌方多人，会？',
+                options: [
+                    { value: 'A', text: '冲上去换一个，不亏，主打一个有来有回' },
+                    { value: 'B', text: '赶紧缩到塔下，苟到队友复活，绝不送人头掉KDA' },
+                    { value: 'C', text: '能偷残血就偷，偷不到就缩塔，不硬刚也不摆烂' }
+                ]
+            },
+            {
+                id: 16,
+                category: 'risk',
+                text: '队友被敌方追杀，你会？',
+                options: [
+                    { value: 'A', text: '立马冲上去救队友，哪怕自己被秒，也要帮队友争取时间' },
+                    { value: 'B', text: '假装没看见，躲在安全区，不浪费自己的KDA' },
+                    { value: 'C', text: '看敌方人数，人少就救，人多就放弃，不盲目牺牲' }
+                ]
+            },
+            {
+                id: 17,
+                category: 'risk',
+                text: '龙团团战，敌方人数比己方多1人，你会？',
+                options: [
+                    { value: 'A', text: '主动开团，哪怕少1人，也敢拼一波抢龙' },
+                    { value: 'B', text: '果断撤退，人数劣势不硬打，保住自己KDA' },
+                    { value: 'C', text: '等队友集合，人数持平再开团，不冒进也不退缩' }
+                ]
+            },
+            {
+                id: 18,
+                category: 'risk',
+                text: '玩坦克上单，团战中你的定位是？',
+                options: [
+                    { value: 'A', text: '主动冲进敌方后排，卖自己扛伤害，帮队友切C' },
+                    { value: 'B', text: '躲在队友身后，偶尔扛点伤害，优先保自己KDA' },
+                    { value: 'C', text: '站在队友前排，该扛伤害就扛，不该扛就拉扯' }
+                ]
+            },
+            // 输出距离偏好维度 (19-24)
+            {
+                id: 19,
+                category: 'distance',
+                text: '玩近战英雄（如诺手、奥拉夫），你习惯的输出方式是？',
+                options: [
+                    { value: 'A', text: '贴脸肉搏，恨不得钻进敌方怀里输出，越近越有安全感' },
+                    { value: 'B', text: '尽量保持距离，能蹭伤害就蹭，不轻易贴脸被集火' },
+                    { value: 'C', text: '保持安全距离贴脸，不盲目冲，也不刻意躲' }
+                ]
+            },
+            {
+                id: 20,
+                category: 'distance',
+                text: '玩远程英雄（如泽拉斯、光辉），你会站在哪个位置输出？',
+                options: [
+                    { value: 'A', text: '地图最犄角旮旯，能打到敌方就好，靠前一步算我输' },
+                    { value: 'B', text: '稍微靠前，贴近队友，方便支援，也能打满输出' },
+                    { value: 'C', text: '站在队友身后半步，既能输出，又能及时撤退' }
+                ]
+            },
+            {
+                id: 21,
+                category: 'distance',
+                text: '团战中，你的输出优先级是？',
+                options: [
+                    { value: 'A', text: '贴脸找敌方C位，哪怕被秒，也要打残/换掉对方' },
+                    { value: 'B', text: '站在安全距离，远程poke消耗，不冒任何风险' },
+                    { value: 'C', text: '找安全角度打输出，能贴脸就贴，不能就poke' }
+                ]
+            },
+            {
+                id: 22,
+                category: 'distance',
+                text: '玩刺客（如劫、男刀），你会选择哪种输出方式？',
+                options: [
+                    { value: 'A', text: '直接贴脸敌方C位，一套秒掉，哪怕自己被反杀' },
+                    { value: 'B', text: '远程消耗，等敌方残血再贴脸，绝不主动冒风险' },
+                    { value: 'C', text: '先远程消耗，敌方血量见底再贴脸收割，不盲目冲' }
+                ]
+            },
+            {
+                id: 23,
+                category: 'distance',
+                text: '敌方刺客冲你，你会？',
+                options: [
+                    { value: 'A', text: '反打贴脸，哪怕是远程英雄，也敢和刺客对拼' },
+                    { value: 'B', text: '立即拉开距离，躲在队友身后，绝不贴脸对拼' },
+                    { value: 'C', text: '边退边消耗，看情况反打，不硬拼也不逃跑' }
+                ]
+            },
+            {
+                id: 24,
+                category: 'distance',
+                text: '玩辅助，你会站在哪个位置配合ADC？',
+                options: [
+                    { value: 'A', text: '贴脸ADC，甚至站在ADC前面，主动帮ADC挡伤害' },
+                    { value: 'B', text: '站在ADC身后很远，只远程消耗，不靠近战场' },
+                    { value: 'C', text: '站在ADC旁边半步，既能保护ADC，又能及时撤退' }
+                ]
+            },
+            // 游戏核心心态维度 (25-30)
+            {
+                id: 25,
+                category: 'mindset',
+                text: '游戏逆风，队友心态崩了，你会？',
+                options: [
+                    { value: 'A', text: '无所谓，继续乱秀操作，哪怕输了，玩得开心最重要' },
+                    { value: 'B', text: '安抚队友，认真找翻盘机会，不赢这把绝不罢休' },
+                    { value: 'C', text: '不摆烂也不较真，能翻就翻，翻不了就当娱乐' }
+                ]
+            },
+            {
+                id: 26,
+                category: 'mindset',
+                text: '你选英雄的原则是？',
+                options: [
+                    { value: 'A', text: '选自己玩得开心的，哪怕是冷门英雄，秀就完事了' },
+                    { value: 'B', text: '选版本强势英雄，能Carry队友，优先保证赢局' },
+                    { value: 'C', text: '选自己会玩且不算冷门的，兼顾快乐和赢面' }
+                ]
+            },
+            {
+                id: 27,
+                category: 'mindset',
+                text: '游戏结束，你最在意的是？',
+                options: [
+                    { value: 'A', text: '自己玩得爽不爽，有没有秀出亮眼操作' },
+                    { value: 'B', text: '输赢结果，哪怕KDA再好，输了也不开心' },
+                    { value: 'C', text: '既在意输赢，也在意体验，赢了更开心，输了不憋屈' }
+                ]
+            },
+            {
+                id: 28,
+                category: 'mindset',
+                text: '队友抢你兵线/经济，你会？',
+                options: [
+                    { value: 'A', text: '无所谓，只要自己玩得爽，兵线被抢也不生气' },
+                    { value: 'B', text: '很生气，和队友理论，甚至抢回兵线，影响赢局也不在乎' },
+                    { value: 'C', text: '偶尔提醒队友，不较真，优先保证团队赢面，也不委屈自己' }
+                ]
+            },
+            {
+                id: 29,
+                category: 'mindset',
+                text: '游戏中被敌方嘲讽，你会？',
+                options: [
+                    { value: 'A', text: '不管输赢，必须追着敌方打，哪怕送人头也要出一口恶气' },
+                    { value: 'B', text: '无视嘲讽，认真发育，用赢局狠狠打脸敌方' },
+                    { value: 'C', text: '偶尔反击，不被嘲讽影响心态，该发育发育，该打团打团' }
+                ]
+            },
+            {
+                id: 30,
+                category: 'mindset',
+                text: '好友喊你一起玩大乱斗，你会优先选？',
+                options: [
+                    { value: 'A', text: '选自己玩得开心的英雄，哪怕和好友阵容不搭' },
+                    { value: 'B', text: '选阵容需要的英雄，哪怕自己玩得不开心，也要帮好友赢' },
+                    { value: 'C', text: '选自己会玩且适配阵容的，兼顾自己快乐和好友赢面' }
+                ]
+            }
+        ];
+
+        // --- 32种人格类型数据 ---
+        const personalityTypes = {
+            'AAAAA': {
+                name: '雪球莽夫主义',
+                tags: ['乱斗战神', '雪球人柱力', '不死不归'],
+                description: '你是乱斗的绝对战神，雪球就是你的命，飞了就是飞了，不死不归，乱斗因你而精彩。',
+                heroes: ['诺手', '腕豪', '皇子', '冲脸亚索']
+            },
+            'AAAAB': {
+                name: '乐子整活主义',
+                tags: ['乱斗灵魂', '摆烂艺术家', '秀就完事'],
+                description: '你是乱斗的灵魂人物，操作华丽，乐子第一，输赢无所谓，秀就完事了。',
+                heroes: ['亚索', '永恩', '劫', '德莱文']
+            },
+            'AAABA': {
+                name: '敢死开团主义',
+                tags: ['团队烈士', '开团工具人', '卖自己换胜利'],
+                description: '你是团队的烈士，敢死开团手，卖自己换胜利，乱斗因你而赢。',
+                heroes: ['奥恩', '塞恩', '芮尔', '石头人']
+            },
+            'AAABB': {
+                name: '随缘开团主义',
+                tags: ['开团看心情', '赢输无所谓', '偶尔C一把'],
+                description: '开团看心情，赢输无所谓，偶尔C一把，随缘才是你的乱斗之道。',
+                heroes: ['亚索', '永恩', '腕豪', '赵信']
+            },
+            'AABAA': {
+                name: '狂甩开团主义',
+                tags: ['技能开团怪', '远程开团', '清场带节奏'],
+                description: '技能开团怪，远程开团，清场带节奏，你是乱斗的节奏大师。',
+                heroes: ['火男', '安妮', '玛尔扎哈', '大眼']
+            },
+            'AABAB': {
+                name: '赢麻整活主义',
+                tags: ['整活赢麻', '远程开团', '秀赢两不误'],
+                description: '整活赢麻，远程开团，秀赢两不误，你是乱斗的快乐赢家。',
+                heroes: ['安妮', '火男', '卡尔玛', '加里奥']
+            },
+            'AABBA': {
+                name: '狂甩赢麻主义',
+                tags: ['狂甩清场', '开团赢麻', '输出拉满'],
+                description: '狂甩清场，开团赢麻，输出拉满，你是乱斗的伤害之王。',
+                heroes: ['安妮', '火男', '玛尔扎哈', '大眼']
+            },
+            'AABBB': {
+                name: '精准整活主义',
+                tags: ['精准整活', '技能乱甩', '快乐不送'],
+                description: '精准整活，技能乱甩，快乐不送，你是乱斗的乐子大师。',
+                heroes: ['亚索', '永恩', '劫', '德莱文']
+            },
+            'ABAAA': {
+                name: '半莽半苟主义',
+                tags: ['雪球半飞半捏', 'KDA战神', '稳中带莽'],
+                description: '雪球半飞半捏，KDA战神，稳中带莽，你是乱斗的平衡大师。',
+                heroes: ['德莱文', '卡莎', '琪亚娜', '刀妹']
+            },
+            'ABAAB': {
+                name: '惜技冲锋主义',
+                tags: ['技能精准控', '冲脸不盲目', '秀操作不送头'],
+                description: '技能精准控，冲脸不盲目，秀操作不送头，你是乱斗的精准大师。',
+                heroes: ['劫', '琪亚娜', '锐雯', '盲僧']
+            },
+            'ABABA': {
+                name: '惜技赢麻主义',
+                tags: ['精准冲锋', 'KDA战神', '稳赢不送'],
+                description: '精准冲锋，KDA战神，稳赢不送，你是乱斗的稳重之王。',
+                heroes: ['刀妹', '卡莎', '锐雯', '琪亚娜']
+            },
+            'ABABB': {
+                name: '精准冲锋主义',
+                tags: ['精准冲脸', '惜技保命', '秀就完事'],
+                description: '精准冲脸，惜技保命，秀就完事，你是乱斗的操作大师。',
+                heroes: ['劫', '琪亚娜', '伊芙琳', '阿卡丽']
+            },
+            'ABBAA': {
+                name: '贴脸苟命主义',
+                tags: ['贴脸苟活', '惜技保命', '偶尔偷伤害'],
+                description: '贴脸苟活，惜技保命，偶尔偷伤害，你是乱斗的苟活大师。',
+                heroes: ['VN', '卡莎', '刀妹', '锐雯']
+            },
+            'ABBAB': {
+                name: '乐子苟命主义',
+                tags: ['快乐苟活', '偶尔秀操作', '不送就赢'],
+                description: '快乐苟活，偶尔秀操作，不送就赢，你是乱斗的快乐苟活者。',
+                heroes: ['狐狸', '阿卡丽', '伊芙琳', '卡莎']
+            },
+            'ABBBA': {
+                name: '贴脸POKE主义',
+                tags: ['贴脸poke', '灵活输出', '稳中带浪'],
+                description: '贴脸poke，灵活输出，稳中带浪，你是乱斗的灵活战士。',
+                heroes: ['烬', '韦鲁斯', '寒冰', 'EZ']
+            },
+            'ABBBB': {
+                name: '缩头整活主义',
+                tags: ['缩头整活', '技能乱甩', '快乐混子'],
+                description: '缩头整活，技能乱甩，快乐混子，你是乱斗的混子艺术家。',
+                heroes: ['卡尔玛', '光辉', '璐璐', '索拉卡']
+            },
+            'BAAAA': {
+                name: '狂甩开团主义',
+                tags: ['狂甩开团', '远程输出', '技能乱甩'],
+                description: '狂甩开团，远程输出，技能乱甩，你是乱斗的输出狂人。',
+                heroes: ['火男', '安妮', '玛尔扎哈', '大眼']
+            },
+            'BAAAB': {
+                name: 'POKE整活主义',
+                tags: ['远程整活怪', '技能乱甩不送', '快乐POKE'],
+                description: '远程整活怪，技能乱甩不送，快乐POKE，你是乱斗的快乐远程。',
+                heroes: ['光辉', '吉格斯', '卡尔玛', '韦鲁斯']
+            },
+            'BAABA': {
+                name: '狂甩苟命主义',
+                tags: ['远程狂甩', '苟住输出', '不送必赢'],
+                description: '远程狂甩，苟住输出，不送必赢，你是乱斗的远程输出之王。',
+                heroes: ['吉格斯', '火男', '光辉', '玛尔扎哈']
+            },
+            'BAABB': {
+                name: '缩头整活主义',
+                tags: ['缩头整活', '技能乱甩', '快乐混子'],
+                description: '缩头整活，技能乱甩，快乐混子，你是乱斗的混子艺术家。',
+                heroes: ['卡尔玛', '光辉', '璐璐', '索拉卡']
+            },
+            'BABAA': {
+                name: '缩头POKE主义',
+                tags: ['后排钉子户', '泽拉斯本拉', '苟分达人'],
+                description: '后排钉子户，泽拉斯本拉，苟分达人，你是乱斗的POKE之王。',
+                heroes: ['泽拉斯', '光辉', '大眼', '炸弹人']
+            },
+            'BABAB': {
+                name: 'KDA苟命主义',
+                tags: ['技能收藏家', '苟王之王', '混子天花板'],
+                description: '技能收藏家，苟王之王，混子天花板，你是乱斗的苟命大师。',
+                heroes: ['VN', '璐璐', '索拉卡', '狐狸']
+            },
+            'BABBA': {
+                name: '苟命赢麻主义',
+                tags: ['后期大核', '苟到翻盘', 'KDA与胜利兼得'],
+                description: '后期大核，苟到翻盘，KDA与胜利兼得，你是乱斗的胜利者。',
+                heroes: ['VN', '金克丝', '卡萨丁', '小法']
+            },
+            'BABBB': {
+                name: '随缘苟命主义',
+                tags: ['随缘苟活', '惜技保命', '苟到翻盘'],
+                description: '随缘苟活，惜技保命，苟到翻盘，你是乱斗的随缘大师。',
+                heroes: ['小法', '卡萨丁', '狐狸', 'VN']
+            },
+            'BBAAA': {
+                name: '缩头冲锋主义',
+                tags: ['缩头蓄势', '精准开团', '苟中带刚'],
+                description: '缩头蓄势，精准开团，苟中带刚，你是乱斗的刚柔并济者。',
+                heroes: ['派克', '芮尔', '锤石', '机器人']
+            },
+            'BBAAB': {
+                name: '惜技苟命主义',
+                tags: ['技能留保命', '苟到最后', '偶尔偷伤害'],
+                description: '技能留保命，苟到最后，偶尔偷伤害，你是乱斗的惜技大师。',
+                heroes: ['狐狸', '阿卡丽', '卡莎', '伊芙琳']
+            },
+            'BBABA': {
+                name: '狂甩苟命主义',
+                tags: ['惜技苟活', '精准输出', '不送必赢'],
+                description: '惜技苟活，精准输出，不送必赢，你是乱斗的苟活专家。',
+                heroes: ['狐狸', '阿卡丽', '卡莎', '伊芙琳']
+            },
+            'BBABB': {
+                name: '随缘混子主义',
+                tags: ['乱斗躺平王', '随机摆烂哥', '蹭伤害大师'],
+                description: '乱斗躺平王，随机摆烂哥，蹭伤害大师，你是乱斗的混子之王。',
+                heroes: ['随机冷门英雄', '全能混子']
+            },
+            'BBBAA': {
+                name: '精准POKE主义',
+                tags: ['poke精准控', '远程开团', '不浪费技能'],
+                description: 'poke精准控，远程开团，不浪费技能，你是乱斗的精准远程。',
+                heroes: ['韦鲁斯', '泽拉斯', '烬', '寒冰']
+            },
+            'BBBAB': {
+                name: '混子赢麻主义',
+                tags: ['混子也能赢', '蹭伤害躺赢', '不送就是赢'],
+                description: '混子也能赢，蹭伤害躺赢，不送就是赢，你是乱斗的躺赢大师。',
+                heroes: ['石头人', '泰坦', '蒙多', '狗头']
+            },
+            'BBBBA': {
+                name: '敢死苟命主义',
+                tags: ['敢死不送', '精准输出', '苟住开团'],
+                description: '敢死不送，精准输出，苟住开团，你是乱斗的精准开团手。',
+                heroes: ['韦鲁斯', '烬', '寒冰', '派克']
+            },
+            'BBBBB': {
+                name: '敢死赢麻主义',
+                tags: ['敢死开团', '精准输出', '稳赢不送'],
+                description: '敢死开团，精准输出，稳赢不送，你是乱斗的胜利保障。',
+                heroes: ['奥恩', '芮尔', '皇子', '塞恩']
+            }
+        };
+
+        // --- 维度名称 ---
+        const dimensionNames = {
+            snowball: { a: '冲脸莽夫', b: '缩头仓鼠' },
+            skill: { a: '狂甩机器', b: '大招收藏家' },
+            risk: { a: '敢死开团手', b: 'KDA守财奴' },
+            distance: { a: '贴脸战神', b: '墙角POKE怪' },
+            mindset: { a: '乐子至上', b: '赢麻党' }
+        };
+
+        // --- 主应用组件 ---
+        function App() {
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [answers, setAnswers] = useState({});
+            const [showResult, setShowResult] = useState(false);
+            const [result, setResult] = useState(null);
+            const canvasRef = useRef(null);
+
+            // 计算结果
+            const calculateResult = useMemo(() => {
+                if (Object.keys(answers).length < questions.length) return null;
+
+                const scores = {
+                    snowball: { a: 0, b: 0 },
+                    skill: { a: 0, b: 0 },
+                    risk: { a: 0, b: 0 },
+                    distance: { a: 0, b: 0 },
+                    mindset: { a: 0, b: 0 }
+                };
+
+                questions.forEach(q => {
+                    const answer = answers[q.id];
+                    if (answer === 'A') scores[q.category].a++;
+                    else if (answer === 'B') scores[q.category].b++;
+                });
+
+                const typeKey = Object.entries(scores)
+                    .map(([key, val]) => val.a >= val.b ? 'A' : 'B')
+                    .join('');
+
+                const radarData = Object.values(scores).map(val => 
+                    Math.max(val.a, val.b)
+                );
+
+                return { typeKey, scores, radarData };
+            }, [answers]);
+
+            // 显示结果
+            useEffect(() => {
+                if (calculateResult && showResult) {
+                    const personality = personalityTypes[calculateResult.typeKey] || personalityTypes['AAAAA'];
+                    setResult({ ...calculateResult, personality });
+                }
+            }, [calculateResult, showResult]);
+
+            // 绘制雷达图
+            useEffect(() => {
+                if (showResult && result && canvasRef.current) {
+                    const ctx = canvasRef.current.getContext('2d');
+                    const centerX = canvasRef.current.width / 2;
+                    const centerY = canvasRef.current.height / 2;
+                    const radius = Math.min(centerX, centerY) - 30;
+                    const sides = 5;
+
+                    // 清空画布
+                    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+                    // 绘制背景网格
+                    for (let level = 1; level <= 3; level++) {
+                        const levelRadius = (radius / 3) * level;
+                        ctx.beginPath();
+                        for (let i = 0; i <= sides; i++) {
+                            const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                            const x = centerX + levelRadius * Math.cos(angle);
+                            const y = centerY + levelRadius * Math.sin(angle);
+                            if (i === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                        }
+                        ctx.closePath();
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                        ctx.stroke();
+                    }
+
+                    // 绘制轴线和标签
+                    const labels = ['冲莽', '甩技', '敢死', '贴脸', '乐子'];
+                    for (let i = 0; i < sides; i++) {
+                        const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                        const x = centerX + radius * Math.cos(angle);
+                        const y = centerY + radius * Math.sin(angle);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(x, y);
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                        ctx.stroke();
+
+                        // 标签
+                        const labelX = centerX + (radius + 20) * Math.cos(angle);
+                        const labelY = centerY + (radius + 20) * Math.sin(angle);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = '12px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(labels[i], labelX, labelY);
+                    }
+
+                    // 绘制数据区域
+                    ctx.beginPath();
+                    for (let i = 0; i < sides; i++) {
+                        const value = result.radarData[i];
+                        const level = value / 3;
+                        const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                        const x = centerX + (radius * level) * Math.cos(angle);
+                        const y = centerY + (radius * level) * Math.sin(angle);
+                        
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(139, 92, 246, 0.3)';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(139, 92, 246, 1)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // 绘制数据点
+                    for (let i = 0; i < sides; i++) {
+                        const value = result.radarData[i];
+                        const level = value / 3;
+                        const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                        const x = centerX + (radius * level) * Math.cos(angle);
+                        const y = centerY + (radius * level) * Math.sin(angle);
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'rgba(139, 92, 246, 1)';
+                        ctx.fill();
+                    }
+                }
+            }, [showResult, result]);
+
+            // 首页
+            if (!showResult && currentQuestion === 0) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                        <div className="max-w-2xl w-full text-center">
+                            <div className="mb-8">
+                                <h1 className="text-5xl md:text-6xl font-bold mb-4 text-glow">
+                                    海斗人格测试
+                                </h1>
+                                <p className="text-xl md:text-2xl text-purple-200">
+                                    海克斯大乱斗MBTI性格测试
+                                </p>
+                                <p className="text-lg text-purple-300 mt-4">
+                                    测测你是乱斗哪种牛马 🎮
+                                </p>
+                            </div>
+
+                            <div className="glass-effect rounded-2xl p-8 mb-8">
+                                <div className="grid grid-cols-5 gap-4 mb-8">
+                                    {Object.entries(dimensionNames).map(([key, names], idx) => (
+                                        <div key={key} className="text-center">
+                                            <Icon 
+                                                name={['snowball', 'sword', 'shield', 'target', 'smile'][idx]} 
+                                                size={32}
+                                                className="mx-auto mb-2 text-purple-400"
+                                            />
+                                            <div className="text-sm text-purple-200">{names.a}</div>
+                                            <div className="text-xs text-gray-400">vs</div>
+                                            <div className="text-sm text-purple-200">{names.b}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-gray-300 mb-6">
+                                    基于MBTI二分法，通过30道趣味测试题，精准分析你的大乱斗玩法风格
+                                </p>
+                                <button 
+                                    onClick={() => setCurrentQuestion(1)}
+                                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-12 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
+                                >
+                                    开始测试
+                                </button>
+                            </div>
+
+                            <p className="text-sm text-gray-400">
+                                ⚡ 耗时约2分钟 | 🎯 纯娱乐测试 | 📊 32种人格结果
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 答题页
+            if (!showResult && currentQuestion > 0) {
+                const question = questions[currentQuestion - 1];
+                const progress = ((currentQuestion - 1) / questions.length) * 100;
+
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                        <div className="max-w-3xl w-full">
+                            {/* 进度条 */}
+                            <div className="mb-8">
+                                <div className="flex justify-between text-sm text-purple-200 mb-2">
+                                    <span>进度</span>
+                                    <span>{currentQuestion} / {questions.length}</span>
+                                </div>
+                                <div className="h-2 bg-purple-900/50 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-500"
+                                        style={{ width: `${progress}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+
+                            {/* 问题卡片 */}
+                            <div className="glass-effect rounded-2xl p-6 md:p-8 mb-6 card-hover transition-all duration-300 overflow-hidden">
+                                <div className="flex items-center mb-4 md:mb-6">
+                                    <Icon 
+                                        name={['snowball', 'skill', 'risk', 'distance', 'mindset'].indexOf(question.category) >= 0 
+                                            ? ['snowball', 'sword', 'shield', 'target', 'smile'][['snowball', 'skill', 'risk', 'distance', 'mindset'].indexOf(question.category)]
+                                            : 'smile'} 
+                                        size={40}
+                                        className="text-purple-400 mr-4"
+                                    />
+                                    <span className="text-purple-200 text-lg">
+                                        {dimensionNames[question.category].a} vs {dimensionNames[question.category].b}
+                                    </span>
+                                </div>
+
+                                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 md:mb-8 text-white">
+                                    {question.text}
+                                </h2>
+
+                                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+                                    {question.options.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            onClick={() => {
+                                                setAnswers(prev => ({ ...prev, [question.id]: option.value }));
+                                                if (currentQuestion < questions.length) {
+                                                    setCurrentQuestion(currentQuestion + 1);
+                                                } else {
+                                                    setShowResult(true);
+                                                }
+                                            }}
+                                            className="flex-1 min-w-[200px] sm:min-w-[180px] p-4 md:p-5 rounded-xl bg-gradient-to-br from-purple-900/50 to-purple-800/30 hover:from-purple-800/50 hover:to-purple-700/30 border-2 border-purple-600/30 hover:border-purple-500/60 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-purple-500/30"
+                                        >
+                                            <div className="flex flex-col items-center text-center h-full">
+                                                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple-600/50 flex items-center justify-center mb-3 md:mb-4">
+                                                    <span className="text-purple-200 font-bold text-lg md:text-xl">
+                                                        {option.value}
+                                                    </span>
+                                                </div>
+                                                <span className="text-white text-sm md:text-base leading-relaxed">
+                                                    {option.text}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* 返回按钮 */}
+                            {currentQuestion > 1 && (
+                                <button
+                                    onClick={() => setCurrentQuestion(currentQuestion - 1)}
+                                    className="flex items-center text-purple-300 hover:text-purple-200 transition-colors"
+                                >
+                                    <Icon name="rotate-ccw" size={20} className="mr-2" />
+                                    返回上一题
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            // 结果页
+            if (showResult && result) {
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                        <div className="max-w-4xl w-full">
+                            {/* 人格标题 */}
+                            <div className="text-center mb-8">
+                                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-glow">
+                                    {result.personality.name}
+                                </h1>
+                                <div className="flex flex-wrap justify-center gap-2 mb-6">
+                                    {result.personality.tags.map((tag, idx) => (
+                                        <span 
+                                            key={idx}
+                                            className="bg-purple-600/50 text-white px-4 py-2 rounded-full text-sm"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* 结果卡片 */}
+                            <div className="glass-effect rounded-2xl p-8 mb-6">
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    {/* 雷达图 */}
+                                    <div className="flex flex-col items-center">
+                                        <h3 className="text-xl font-bold mb-4 text-purple-200">
+                                            你的乱斗雷达图
+                                        </h3>
+                                        <div className="bg-purple-900/30 rounded-xl p-4">
+                                            <canvas 
+                                                ref={canvasRef} 
+                                                width={300} 
+                                                height={300}
+                                                className="max-w-full"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* 详细信息 */}
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-3 text-purple-200">
+                                                行为画像
+                                            </h3>
+                                            <p className="text-gray-300 leading-relaxed">
+                                                {result.personality.description}
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-3 text-purple-200">
+                                                本命英雄
+                                            </h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {result.personality.heroes.map((hero, idx) => (
+                                                    <span 
+                                                        key={idx}
+                                                        className="bg-purple-800/50 text-white px-3 py-1 rounded-lg text-sm"
+                                                    >
+                                                        {hero}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-3 text-purple-200">
+                                                维度分析
+                                            </h3>
+                                            <div className="space-y-2">
+                                                {Object.entries(result.scores).map(([key, score]) => (
+                                                    <div key={key} className="flex justify-between text-sm">
+                                                        <span className="text-purple-300">
+                                                            {dimensionNames[key].a} vs {dimensionNames[key].b}
+                                                        </span>
+                                                        <span className="text-white">
+                                                            {score.a} - {score.b}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 操作按钮 */}
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button
+                                    onClick={() => {
+                                        setCurrentQuestion(0);
+                                        setAnswers({});
+                                        setShowResult(false);
+                                        setResult(null);
+                                    }}
+                                    className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
+                                >
+                                    <Icon name="rotate-ccw" size={20} className="mr-2" />
+                                    重新测试
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        // 保存图片功能
+                                        const canvas = canvasRef.current;
+                                        if (canvas) {
+                                            const link = document.createElement('a');
+                                            link.download = `海斗人格测试-${result.personality.name}.png`;
+                                            link.href = canvas.toDataURL();
+                                            link.click();
+                                        }
+                                    }}
+                                    className="flex items-center justify-center bg-purple-800 hover:bg-purple-900 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105"
+                                >
+                                    <Icon name="download" size={20} className="mr-2" />
+                                    保存结果
+                                </button>
+                            </div>
+
+                            <p className="text-center text-sm text-gray-400 mt-8">
+                                💜 海斗人格测试 - 纯娱乐性质，请勿认真 💜
+                            </p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        }
+
+        // 渲染应用
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
