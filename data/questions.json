@@ -1,0 +1,809 @@
+{
+  "version": "1.0",
+  "totalQuestions": 30,
+  "dimensions": [
+    {
+      "id": 0,
+      "name": "雪球冲锋执念",
+      "tendencyA": "冲脸莽夫",
+      "tendencyB": "缩头仓鼠",
+      "emojiA": "🦁",
+      "emojiB": "🐹"
+    },
+    {
+      "id": 1,
+      "name": "技能释放态度",
+      "tendencyA": "狂甩机器",
+      "tendencyB": "大招收藏家",
+      "emojiA": "💥",
+      "emojiB": "🔒"
+    },
+    {
+      "id": 2,
+      "name": "风险承担觉悟",
+      "tendencyA": "敢死开团手",
+      "tendencyB": "KDA守财奴",
+      "emojiA": "✊",
+      "emojiB": "💰"
+    },
+    {
+      "id": 3,
+      "name": "输出距离偏好",
+      "tendencyA": "贴脸战神",
+      "tendencyB": "墙角POKE怪",
+      "emojiA": "👊",
+      "emojiB": "🎯"
+    },
+    {
+      "id": 4,
+      "name": "游戏核心心态",
+      "tendencyA": "乐子至上",
+      "tendencyB": "赢麻党",
+      "emojiA": "😂",
+      "emojiB": "🏆"
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dimension": 0,
+      "question": "游戏里雪球技能的正确用法是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "丢中就飞！家人们，我伤害打满了！（诺手/奥拉夫同款莽）",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "哥们，雪球有用吗？感觉不如疾跑呀（泽拉斯专属缩头操作）",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "看情况甩，敌方落单就飞，人多就捏着，不莽也不缩",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "dimension": 0,
+      "question": "开团时你和队友的雪球都命中了，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "秒飞雪球领先开团，吃满伤害低调离开",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "犹豫下等队友先上，少吃伤害才能C",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "看对面技能情况，能飞就飞不能飞就算了",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "dimension": 0,
+      "question": "己方五人只剩下你守塔，而你没有清兵线能力，你会选择？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "雪球冲敌方后排，赌一把切掉C位操作",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "基地还在，塔随便放，退至下一个塔",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "观察局势，有机会就偷残血，没机会就保命",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "dimension": 0,
+      "question": "敌方五人全在，但有个残血躲在塔下，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "找到机会就进去切，先把头拿了再说",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "塔下太危险，绝不冒进，丢不死就等待队友开团",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "相信一会他就被AOE砸死了，不用理他",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "dimension": 0,
+      "question": "你认为石头人（墨菲特）的大招如何使用才是正确的？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "配合雪球和闪现，主打出其不意大中五个才叫精彩",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "等进入斩杀线，一套丝滑小连招秒人拿头才能滚雪球赢比赛",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "能大到谁就大谁，不要团结束还捏在手里就行",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "dimension": 0,
+      "question": "作为杰斯，对面脆皮居多，以下符文你倾向于选择？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "裁决使",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "老练狙神",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "无所谓，都可以玩",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "dimension": 1,
+      "question": "关于技能释放，你平时的操作哪种占多数？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "丢完技能就是尽力，兄弟们我打满了",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "捏得很死，有机会斩杀再一套灌下去",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "有敌人就甩，没敌人就留着，不刻意浪费也不刻意攥着",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "dimension": 1,
+      "question": "玩火男/安妮这类AOE英雄，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "技能乱甩，哪怕只蹭到一点伤害，也要让敌方感受到你的存在",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "耐心等敌方站位集中，一套技能打满，不做无用功",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "随缘甩技能，看到敌方就放，没扎堆也不刻意等",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "dimension": 1,
+      "question": "游戏快结束时，你的大招还没放，会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "随便找个敌方单位甩出去，不浪费CD，主打一个仪式感",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "继续留着，万一翻盘能用，哪怕最后没放也不随便浪费",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "有残血就甩，没残血就留着，不强求也不浪费",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "dimension": 1,
+      "question": "团战刚开，你的大招CD刚好转好，会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "立马甩大招，不管敌方站位，先打一波伤害再说",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "先观察敌方站位，等敌方扎堆再放大招，打满伤害",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "看队友输出，队友跟上就放，没跟上就再等1-2秒",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "dimension": 1,
+      "question": "玩辅助（如璐璐、卡尔玛），你的技能释放习惯是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "技能乱甩，不管队友需不需要，CD好就放",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "技能攥紧，只在队友被集火、需要保护时才放",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "队友有危险就放保护技能，没危险就偶尔蹭点伤害",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "dimension": 1,
+      "question": "技能空了之后，你的反应是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "继续甩其他技能，哪怕空了也不影响，主打一个气势",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "停止放技能，等技能CD，避免再空浪费",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "随缘放技能，不空就打伤害，空了就等下一波",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "dimension": 2,
+      "question": "团战劣势，需要有人肉身开团，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "主动站出来，卖自己换队友输出时间，主打一个团队奉献",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "开团交给菜的人，自己必须打满伤害收割，美美拿下MVP",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "玩好自己的，等对面自己送",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "dimension": 2,
+      "question": "敌方残血但有控制技能，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "果断冲上去收割，哪怕被控制，换残血也值",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "放弃收割，万一被反杀掉，得不偿失",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "再等等，也许一会她就把技能交了呢...",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "dimension": 2,
+      "question": "你对作弊：我能回城的倾向性是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "不如选提升战力的符文",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "有就选，泉水在哪我在哪",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "无所谓",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "dimension": 2,
+      "question": "状态尚可的队友被敌方追杀，刚复活传送过来的你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "回头打回头打！雪球一丢就是操作操作操作！",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "静静看他逃，逃不掉是命",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "象征性丢个技能看看机会",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "dimension": 2,
+      "question": "你认为你在团队中经常扮演着怎么样的角色？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "积极的开团手，找到机会就是干，可以死但不能懦",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "qwer钢琴家，出个冰杖恶心折磨对面笨比，打完直呼丢得手酸",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "什么都可以玩，缺什么玩什么",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "dimension": 2,
+      "question": "你更愿意玩以下哪个英雄？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "舞会女王洛，见到我就是团战启动",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "老练狙神泽拉斯，人没看到血条狂掉",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "闪现疾跑猫咪，双手离开键盘嘴巴指挥队友",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "dimension": 3,
+      "question": "你玩哪一类英雄频率更高？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "诺手奥拉夫尼拉，疾跑雪球追着就是砍",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "拉克丝泽拉斯女警，清兵Poke两不误",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "队友缺啥我玩啥，主打一个全能",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "dimension": 3,
+      "question": "你认为在海克斯大乱斗中，豹女、塞纳、戏命师、探险家属于哪类英雄？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "丢半天刮对面一层皮，垫底中的垫底",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "输出距离安全、Poke 爆发可观，一标满血斩杀脆皮",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "一个都不了解，还有别的英雄给我玩吗",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "dimension": 3,
+      "question": "你对冰寒的态度是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "一群婊子拿减速天天恶心我！别让我摸到你！",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "求求了，2个天赋换一个冰寒我都愿意！",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "一个很普通的符文",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "dimension": 3,
+      "question": "你认为金克斯更适配亮出你的剑还是最万用瞄准镜？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "剑来！战必应！战士也要被我斩于马下！",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "炮换狙击枪，安全位置打满输出才是AD之魂！",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "全是垃圾，都 roll 了",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "dimension": 3,
+      "question": "你吃到对面雪球，你的第一反应是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "肾上腺素立即分泌，随时准备反打，哪怕是远程英雄，也必须一套伤害先灌给对面",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "立即拉开距离，寻找队友或者塔的位置，等自己进入安全位置再考虑反打",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "边退边消耗，看情况反打，不硬拼也不逃跑",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "dimension": 3,
+      "question": "假设你是辅助，你经常站在哪个位置配合ADC？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "我是ADC的阿格斯之盾，永远站在ADC前面，自己倒下之前谁都不许碰到AD",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "站在ADC侧身或者身后，远程消耗、奶血给盾为主，只有自己活着才能够更多地辅助队友",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "眼里没有AD，只有对自己操作的欣赏",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "dimension": 4,
+      "question": "游戏逆风，队友心态崩了，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "无所谓，继续乱秀操作，哪怕输了，玩得开心最重要",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "安抚队友，认真找翻盘机会，不赢这把绝不罢休",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "不摆烂也不较真，能翻就翻，翻不了就当娱乐",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "dimension": 4,
+      "question": "你选英雄的原则是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "so lie ya gai dou! 有索玩索滑出精彩！自己绝活/喜欢的英雄就才永远的T0英雄！",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "打开OPGG，选版本T0的强势英雄，优先保证赢局，自己玩得也爽",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "选自己会玩且不算冷门的，兼顾快乐和赢面",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "dimension": 4,
+      "question": "游戏结束，你最在意的是？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "自己玩得爽不爽",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "输赢结果",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "既在意输赢，也在意体验，赢了更开心，输了不憋屈",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "dimension": 4,
+      "question": "队友抢你人头/经济，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "无所谓，只要自己玩得爽，被收集者包围也不生气",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "很生气，和队友理论，你K我头你能C吗？",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "偶尔提醒队友，不较真，优先保证团队赢面，也不委屈自己",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "dimension": 4,
+      "question": "游戏中被敌方嘲讽/亮标，你会？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "事已至此，输赢已无意义，优先干死喜欢上嘴脸的",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "无视嘲讽，认真发育，用赢局狠狠打脸敌方",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "偶尔反击，不被嘲讽影响心态，该发育发育，该打团打团",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "dimension": 4,
+      "question": "队友选出四个丢子，你会优先选？（ ）",
+      "options": [
+        {
+          "key": "A",
+          "text": "火速加入，五丢子轮番轰炸，撤得慢的是前排",
+          "tendency": "A",
+          "score": 1
+        },
+        {
+          "key": "B",
+          "text": "摸摸选下带控制的前排，城墙是提升胜率最好的选择",
+          "tendency": "B",
+          "score": 1
+        },
+        {
+          "key": "C",
+          "text": "我选完爱玩的就低头看刷抖音了，开局才发现四个丢子！",
+          "tendency": "neutral",
+          "score": 0
+        }
+      ]
+    }
+  ],
+  "scoringRules": {
+    "description": "每题3个选项，A/B选项对应各维度的两个倾向，C为中间态（不计分）",
+    "maxScorePerDimension": 6,
+    "questionsPerDimension": 6,
+    "threshold": 4,
+    "thresholdDescription": "单个维度某一倾向得分≥4分，即判定为该维度最终倾向",
+    "tieBreaking": {
+      "condition": "若A、B得分持平（均为2-3分，C得分对应）",
+      "method": "按'就近匹配'原则，结合玩家整体答题倾向判定"
+    }
+  }
+}
