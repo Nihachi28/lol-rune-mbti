@@ -422,6 +422,39 @@
 
                                         <div>
                                             <h3 className="text-xl font-bold mb-3 text-purple-200">
+                                                典型操作
+                                            </h3>
+                                            <div className="bg-purple-900/30 rounded-lg p-4 border-l-4 border-purple-500">
+                                                <p className="text-white italic">
+                                                    "{result.personality.typicalAction}"
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-3 text-purple-200">
+                                                经典台词
+                                            </h3>
+                                            <div className="bg-purple-900/30 rounded-lg p-4 border-l-4 border-pink-500">
+                                                <p className="text-white italic font-semibold">
+                                                    {result.personality.classicQuote}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-3 text-purple-200">
+                                                符文搭配
+                                            </h3>
+                                            <div className="bg-purple-900/30 rounded-lg p-4 border-l-4 border-yellow-500">
+                                                <p className="text-yellow-300 font-semibold">
+                                                    {result.personality.runeBuild}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <h3 className="text-xl font-bold mb-3 text-purple-200">
                                                 性格标签
                                             </h3>
                                             <div className="flex flex-wrap gap-2">
@@ -429,10 +462,7 @@
                                                     心情: {result.personality.mood}
                                                 </span>
                                                 <span className="bg-purple-800/50 text-white px-3 py-1 rounded-lg text-sm">
-                                                    {questionsData.dimensions[0].tendencyA}: {result.scores[0].a}分
-                                                </span>
-                                                <span className="bg-purple-800/50 text-white px-3 py-1 rounded-lg text-sm">
-                                                    {questionsData.dimensions[0].tendencyB}: {result.scores[0].b}分
+                                                    代表英雄: {result.personality.hero}
                                                 </span>
                                             </div>
                                         </div>
